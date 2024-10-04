@@ -7,7 +7,6 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.media.Ringtone
 import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
@@ -30,34 +29,34 @@ class AlarmReceiver : BroadcastReceiver() {
         if (message != null) {
             showAlarmNotification(context, title, message, notifId)
         }
+    }
 
-        fun setOneTimeAlarm(context: Context, type: String, date: String, time: String, message: String) {
+    fun setOneTimeAlarm(context: Context, type: String, date: String, time: String, message: String) {
 
-            if (isDateValid(date, DATE_FORMAT) || isDateValid(time, TIME_FORMAT)) return
+        if (isDateValid(date, DATE_FORMAT) || isDateValid(time, TIME_FORMAT)) return
 
-            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            val intent = Intent(context, AlarmReceiver::class.java)
-            intent.putExtra(EXTRA_MESSAGE, message)
-            intent.putExtra(EXTRA_TYPE, type)
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(context, AlarmReceiver::class.java)
+        intent.putExtra(EXTRA_MESSAGE, message)
+        intent.putExtra(EXTRA_TYPE, type)
 
-            Log.e("ONE TIME", "$date $time")
-            val dateArray = date.split("-").toTypedArray()
-            val timeArray = time.split(":").toTypedArray()
+        Log.e("ONE TIME", "$date $time")
+        val dateArray = date.split("-").toTypedArray()
+        val timeArray = time.split(":").toTypedArray()
 
-            val calendar = Calendar.getInstance()
-            calendar.set(Calendar.YEAR, Integer.parseInt(dateArray[0]))
-            calendar.set(Calendar.MONTH, Integer.parseInt(dateArray[1]) - 1)
-            calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dateArray[2]))
-            calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(timeArray[0]))
-            calendar.set(Calendar.MINUTE, Integer.parseInt(timeArray[1]))
-            calendar.set(Calendar.SECOND, 0)
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.YEAR, Integer.parseInt(dateArray[0]))
+        calendar.set(Calendar.MONTH, Integer.parseInt(dateArray[1]) - 1)
+        calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dateArray[2]))
+        calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(timeArray[0]))
+        calendar.set(Calendar.MINUTE, Integer.parseInt(timeArray[1]))
+        calendar.set(Calendar.SECOND, 0)
 
-            val pendingIntent = PendingIntent.getBroadcast(context, ID_ONETIME, intent,PendingIntent.FLAG_IMMUTABLE)
-            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
+        val pendingIntent = PendingIntent.getBroadcast(context, ID_ONETIME, intent,PendingIntent.FLAG_IMMUTABLE)
+        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
 
-            Toast.makeText(context, "One time alarm set up", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "One time alarm set up", Toast.LENGTH_SHORT).show()
 
-        }
     }
 
     private fun showAlarmNotification(context: Context, title: String, message: String, notifId: Int) {
