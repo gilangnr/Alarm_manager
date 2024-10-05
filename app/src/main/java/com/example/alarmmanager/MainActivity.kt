@@ -17,20 +17,24 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, DatePickerFragme
     private var binding: ActivityMainBinding? = null
     private lateinit var alarmReceiver: AlarmReceiver
 
+    //    permission
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+        if (isGranted) {
+            Toast.makeText(this, "Notifications permission granted", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "Notifications permission rejected", Toast.LENGTH_SHORT).show()
+        }
+    }
     companion object {
         private const val DATE_PICKER_TAG = "DatePicker"
         private const val TIME_PICKER_ONCE_TAG = "TimePickerOnce"
         private const val TIMRE_PICKER_REPEAT_TAG = "TimePickerRepat"
     }
 
-//    permission
-    private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
-        if (isGranted) {
-            Toast.makeText(this, "Notifications permission granted", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(this, "Notifications permission rejected", Toast.LENGTH_SHORT).show()
-        }
-}
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -56,16 +60,18 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, DatePickerFragme
                 datePickerFragment.show(supportFragmentManager, DATE_PICKER_TAG)
             }
             R.id.btn_once_time -> {
-                val timePickerFragment = TimePickerFragment()
-                timePickerFragment.show(supportFragmentManager, TIME_PICKER_ONCE_TAG)
+                val timePickerFragmentOne = TimePickerFragment()
+                timePickerFragmentOne.show(supportFragmentManager, TIME_PICKER_ONCE_TAG)
             }
             R.id.btn_set_once_alarm -> {
                 val onceDate = binding?.tvOnceDate?.text.toString()
                 val onceTime = binding?.tvOnceTime?.text.toString()
                 val onceMessage = binding?.edtOnceMessage?.text.toString()
 
-                alarmReceiver.setOneTimeAlarm(this, AlarmReceiver.TYPE_ONE_TIME, onceDate, onceTime, onceMessage)
-
+                alarmReceiver.setOneTimeAlarm(this, AlarmReceiver.TYPE_ONE_TIME,
+                    onceDate,
+                    onceTime,
+                    onceMessage)
             }
         }
     }
